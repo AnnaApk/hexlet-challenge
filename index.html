@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Таймеры обратного отсчёта</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    #app {
+      max-width: 400px;
+      margin: auto;
+    }
+    input, button {
+      margin: 5px 0;
+      padding: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #f9f9f9;
+    }
+    .timer-value {
+      font-weight: bold;
+    }
+    .remove-btn {
+      padding: 5px 10px;
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .remove-btn:hover {
+      background: #c0392b;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div>
+      <input type="number" id="time-input" placeholder="Введите время в секундах">
+      <button id="add-timer">Добавить таймер</button>
+    </div>
+    <ul id="timers">
+      <!-- Таймеры будут добавляться сюда -->
+    </ul>
+  </div>
+
+  <script>
+    (function() {
+      const app = document.getElementById('app');
+      const timeInput = document.getElementById('time-input');
+      const addTimerButton = document.getElementById('add-timer');
+      const timersList = document.getElementById('timers');
+
+      function createTimer(duration) {
+        let timeRemaining = duration;
+        const listItem = document.createElement('li');
+        const timerValue = document.createElement('span');
+        const removeButton = document.createElement('button');
+
+        timerValue.textContent = `${timeRemaining} сек.`;
+        timerValue.className = 'timer-value';
+
+        removeButton.textContent = 'Удалить';
+        removeButton.className = 'remove-btn';
+
+        listItem.appendChild(timerValue);
+        listItem.appendChild(removeButton);
+        timersList.appendChild(listItem);
+
+        const intervalId = setInterval(() => {
+          if (timeRemaining > 0) {
+            timeRemaining--;
+            timerValue.textContent = `${timeRemaining} сек.`;
+          } else {
+            clearInterval(intervalId);
+            listItem.remove();
+          }
+        }, 1000);
+
+        removeButton.addEventListener('click', () => {
+          clearInterval(intervalId);
+          listItem.remove();
+        });
+      }
+
+      addTimerButton.addEventListener('click', () => {
+        const duration = parseInt(timeInput.value, 10);
+        if (!isNaN(duration) && duration > 0) {
+          createTimer(duration);
+          timeInput.value = '';
+        } else {
+          alert('Введите корректное положительное число!');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
